@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matplotlib Graph</title>
+</head>
+<body>
+
+    {% for date, graph in context.items %}
+        <br>{{date}}<br>
+        <img src="data:image/png;base64,{{ graph }}" alt="Matplotlib Graph 2" class="blog-image">
+    {% endfor %}
+<!--    <img src="data:image/png;base64,{{ graph_1 }}" alt="Matplotlib Graph 1" class="blog-image">-->
+</body>
+</html>
