@@ -14,8 +14,11 @@ from datetime import datetime, timedelta
 
 from all_charts.helpers import get_data_for_plot, get_hour_key, convert_date_to_number, upload_file_from_nasa, convert_ionex_to_json, convert_number_to_date_format
 
-from all_charts.clodflare import check_file_exists, get_json_file, save_image_to_r2, generate_image_link
+from all_charts.clodflare import CloudflareR2Client
 from all_charts.helpers import save_file, check_local_file_exists, get_station_prefix, get_nasa_file_option
+
+def getCloudflareClient():
+    return CloudflareR2Client()
 
 def get_graph():
     # Create a new figure and plot some data
@@ -75,32 +78,18 @@ def get_graph_v2(date_hour, date, station):
     file_name = f"matplotlib-data-{reformat_date_string(date_hour)}.png"
     file_path = None
 
-    if not check_file_exists(date, file_name, station):
+    r2cliect = getCloudflareClient()
+
+    if not r2cliect.check_file_exists(date, file_name, station):
         print('Check Image doesn\'t exists: ', True)
-        file_path = save_image_to_r2(str(date), file_name, buf.read(), station)
+        file_path = r2cliect.save_image_to_r2(str(date), file_name, buf.read(), station)
     else:
-        file_path = generate_image_link(date, file_name, station)
-        
+        file_path = r2cliect.generate_image_link(date, file_name, station)
 
-    # if folder_path is None:
-    #     folder_path = os.getcwd()
-
-    # # Save the figure to a file in the specified folder
-    # if not os.path.exists('static/cache'):
-    #     os.makedirs('static/cache')
-    # file_path = os.path.join('static/cache', 'matplotlib-data-' + reformat_date_string(date_hour) + '.png')
-    # with open(file_path, 'wb') as f:
-    #     f.write(buf.read())
-
-    # if has_png_files_in_r2(f"{str(date)}/code"):
-    #     print('Contains files: ', True)
-
-#     buf.seek(0)
-#     string = base64.b64encode(buf.read())
-#
-#     return string.decode('utf-8')
-
-    return file_path
+    return {
+        'url': file_path,
+        'data': data
+    }
 
 
 def get_graphs_hourly(selected_date: None, station: str = 'CODE'):
@@ -115,8 +104,10 @@ def get_graphs_hourly(selected_date: None, station: str = 'CODE'):
     station_prefix = get_station_prefix(station)
     nasa_file_option = get_nasa_file_option(station)
 
-    file_key = str(formatedDate) + '/' + station + "/" + station_prefix +"0OPSRAP_" + str(formatedDate) + "0000_01D_" + nasa_file_option +"H_GIM.json"
-    selected_date_exist = check_file_exists(formatedDate,  station_prefix + "0OPSRAP_" + str(formatedDate) + "0000_01D_" + nasa_file_option + "H_GIM.json", station)
+    r2cliect = getCloudflareClient()
+
+    file_key = str(formatedDate) + '/' + station + "/" + station_prefix +"0OPSRAP_" + str(formatedDate) + "0000_01D_" + nasa_file_option + "H_GIM.json"
+    selected_date_exist = r2cliect.check_file_exists(formatedDate,  station_prefix + "0OPSRAP_" + str(formatedDate) + "0000_01D_" + nasa_file_option + "H_GIM.json", station)
 
     print('CHECK Selected Date data is exist: ', selected_date_exist)
 
@@ -131,22 +122,21 @@ def get_graphs_hourly(selected_date: None, station: str = 'CODE'):
         upload_file_from_nasa(formatedDate, station)
         convert_ionex_to_json(formatedDate, station)
     elif not check_local_file_exists(local_file_path):
-        json_data = get_json_file('tec-charts', file_key)
+        json_data = r2cliect.get_json_file(file_key)
         save_file(json_data, local_file_path)
 
     if station == "CODE":
         for hour in range(25):
             date_hour = format_date(str(selected_date)) + ' ' + get_hour_key(hour)
             data_path = get_graph_v2(date_hour, formatedDate, station)
-            print('Saved data: ', data_path)
+            print('Saved data: ', data_path['url'])
             data[date_hour] = data_path
     elif station == "JPL":
         for hour in range(0, 23, 2):
             date_hour = format_date(str(selected_date)) + ' ' + get_hour_key(hour)
             data_path = get_graph_v2(date_hour, formatedDate, station)
-            print('Saved data: ', data_path)
+            print('Saved data: ', data_path['url'])
             data[date_hour] = data_path
-
 
     return data
 
@@ -173,15 +163,33 @@ def format_date(date_str):
     return formatted_date
 
 def get_valid_date(selected_date_str):
-    # Если дата не передана или невалидна, возвращаем дату на 2 дня меньше текущей
+    # If the date is not provided or invalid, return the date 2 days earlier than the current date
     if not selected_date_str:
         return (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
 
-    # Преобразуем строку в объект datetime
+    # Converting the string into a datetime object
     selected_date = datetime.strptime(str(selected_date_str), '%Y-%m-%d').date()
     
-    # Проверяем, меньше ли дата на 2 дня от текущей
+    # Checking if the date is 2 days earlier than the current date
     if selected_date >= datetime.now().date() - timedelta(days=2):
         return (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
     
     return selected_date_str
+
+def get_generated_ionex_json_url(station: str, selected_date: str) -> str:
+    """
+    Generates the URL for the TEC chart based on the selected satellite and date.
+    
+    :param selected_date: Date in the format 'YYYY-MM-DD'
+    :param selected_satellite: Either 'CODE' or 'JPL'
+    :return: Generated URL as a string
+    """
+     
+    formatted_date = convert_date_to_number(str(selected_date))
+
+    if station == "CODE":
+        return f"https://tec-charts.org/{formatted_date}/CODE/COD0OPSRAP_{formatted_date}0000_01D_01H_GIM.json"
+    elif station == "JPL":
+        return f"https://tec-charts.org/{formatted_date}/JPL/JPL0OPSRAP_{formatted_date}0000_01D_02H_GIM.json"
+    else:
+        return None  # Return None or raise an exception if the satellite is unknown

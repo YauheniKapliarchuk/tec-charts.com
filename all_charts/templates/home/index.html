@@ -4,7 +4,7 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="/static/img/favicon.png" type="image/png">
+    <link rel="icon" href="/static/img/favicon.svg" type="image/png">
     <title>TEC-CHARTS Ionosphere</title>
 
     {% load static %}
@@ -80,7 +80,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container box_1620">
 
-            <a class="navbar-brand logo_h" href="index-2.html"><img src="../../../static/img/logo.png" alt></a>
+            <a class="navbar-brand logo_h" href="index-2.html"><img src="../../../static/img/logo.svg" alt></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="icon-bar"></span>
@@ -91,16 +91,7 @@
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
                     <li class="nav-item"><a class="nav-link" href="index-2.html">Home</a></li>
-                    <!--                    <li class="nav-item active"><a class="nav-link" href="gallery.html">Gallery</a></li>-->
-                    <!--                    <li class="nav-item"><a class="nav-link" href="service.html">Services</a></li>-->
                     <li class="nav-item"><a class="nav-link" href="about-us.html">About</a></li>
-                    <!--                    <li class="nav-item submenu dropdown">-->
-                    <!--                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blog</a>-->
-                    <!--                        <ul class="dropdown-menu">-->
-                    <!--                            <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>-->
-                    <!--                            <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>-->
-                    <!--                        </ul>-->
-                    <!--                    </li>-->
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -117,11 +108,8 @@
         <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0"
              data-background></div>
         <div class="container">
-            <div class="banner_content text-center">
-                <!-- <h2>Gallery</h2> -->
+            <div class="banner_content text-center" style="color: white;">
                 <div class="page_link">
-                    <!-- <a href="index-2.html">Home</a> -->
-                    <!--                    <a href="gallery.html">Gallery</a>-->
                     <h1>Select a Date</h1>
                     <form id="dateForm" method="post" action="{% url 'index' %}">
                         {% csrf_token %}
@@ -139,142 +127,43 @@
 <section class="home_gallery_area p_120">
     <div class="container">
         <div class="isotope_fillter">
-            <!-- <ul class="gallery_filter list">
-                <li class="active" data-filter="*"><a href="#">CODE</a></li>
-                <li data-filter=".ap"><a href="#">JPL</a></li>
-                <li data-filter=".unp"><a href="#">Unapproved</a></li>
-                <li data-filter=".unv"><a href="#">GPS</a></li>
-            </ul> -->
             <ul class="gallery_filter list">
                 <li class="{% if selected_satellite == 'CODE' %}active{% endif %}" data-filter="*"><a href="#">CODE</a></li>
                 <li class="{% if selected_satellite == 'JPL' %}active{% endif %}" data-filter=".ap"><a href="#">JPL</a></li>
-                <!-- Добавьте другие спутники по аналогии -->
+                <!-- Add others satellites -->
             </ul>
         </div>
     </div>
     <div class="container box_1620">
-        <div class="gallery_f_inner row imageGallery1">
-            {% for date, graph in context.items %}
-            <div class="col-lg-3 col-md-4 col-sm-6 ap">
-                <div class="h_gallery_item">
-                    <img src="{{ graph }}" alt="Matplotlib Graph 2" class="blog-image">
-                    <div class="hover">
-                        <!--                            <a href="data:image/png;base64,{{ graph }}"><h4>{{date}}</h4></a>-->
-                        <!--                            <a class="light"  target="_blank" href="data:image/png;base64,{{ graph }}"><i class="fa fa-expand"></i></a>-->
-                        <a href="{{ graph }}"><h4>{{date}}</h4></a>
-                        <a class="light" target="_blank" href="{{ graph }}"><i class="fa fa-expand"></i></a>
-                    </div>
+        <!-- Display the generated link -->
+        <div>
+            {% if generated_ionex_json_url %}
+                <div class="generated_link">
+                    <h3>
+                        <strong>Generated IONEX JSON</strong>
+                        <a href="{{ generated_ionex_json_url }}" target="_blank">Link</a>
+                    </h3>
                 </div>
-            </div>
+            {% endif %}
+        </div>
+        <br>
+        <br>
+        <div class="gallery_f_inner row imageGallery1">
+            {% for date, graph_obj in context.items %}
+                <div class="col-lg-3 col-md-4 col-sm-6 ap">
+                    <div class="h_gallery_item" style="margin-bottom: 0;">
+                        <!-- Display the graph image -->
+                        <img src="{{ graph_obj.url }}" alt="Matplotlib Graph" class="blog-image">
+                        <div class="hover">
+                            <!-- Link to open the graph in full screen -->
+                            <a href="{{ graph_obj.url }}"><h4>{{ date }}</h4></a>
+                            <a class="light" title="{{ date }}" target="_blank" href="{{ graph_obj.url }}"><i class="fa fa-expand"></i></a>
+                        </div>
+                    </div>
+                    <!-- Button to copy data to clipboard -->
+                    <button style="margin-left: 35%; margin-bottom: 30px; cursor: copy; border-radius: 10px; border: 1px solid #131433; background-color: #f9f9fe;" class="copy-btn" data-graph-data="{{ graph_obj.data }}">Copy Data</button>
+                </div>
             {% endfor %}
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 ap">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-1.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-1.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unv">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-2.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-2.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unp ap">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-3.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-3.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unp">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-4.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-4.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unv">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-5.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-5.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 ap">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-6.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-6.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unp">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-7.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-7.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unp">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-8.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-8.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unv">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-9.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-9.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unp">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-10.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-10.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 ap">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-11.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-11.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--            <div class="col-lg-3 col-md-4 col-sm-6 unv">-->
-            <!--                <div class="h_gallery_item">-->
-            <!--                    <img src="../../../static/img/gallery/gallery-12.jpg" alt>-->
-            <!--                    <div class="hover">-->
-            <!--                        <a href="#"><h4>Spreading Peace to world</h4></a>-->
-            <!--                        <a class="light" href="../../../static/img/gallery/gallery-12.jpg"><i class="fa fa-expand"></i></a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
     </div>
 </section>
@@ -284,12 +173,7 @@
         <div class="row footer_inner">
             <div class="col-lg-5 col-sm-6">
                 <aside class="f_widget ab_widget">
-                    <!--                    <div class="f_title">-->
-                    <!--                        <h3>About Me</h3>-->
-                    <!--                    </div>-->
-                    <!--                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore dolore </p>-->
                     <p>
-                        <!--                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This service was made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com/" target="_blank">Colorlib</a>-->
                         Copyright &copy;<script>document.write(new Date().getFullYear());</script>
                         All rights reserved
                     </p>
@@ -380,6 +264,27 @@
         $("#dateForm").submit();
     });
 });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.copy-btn');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const graphData = this.getAttribute('data-graph-data');
+
+                // Create a temporary element to copy the data
+                const tempInput = document.createElement('textarea');
+                tempInput.value = graphData;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+
+                alert('Graph data copied to clipboard!');
+            });
+        });
+    });
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8b253dfea2ab4077af8c6f58422dfbfd1689876627854"
         integrity="sha512-bjgnUKX4azu3dLTVtie9u6TKqgx29RBwfj3QXYt5EKfWM/9hPSAI/4qcV5NACjwAo8UtTeWefx6Zq5PHcMm7Tg=="

@@ -86,7 +86,7 @@ button:focus {
 }
 
 .p_120 {
-  padding-top: 120px;
+  padding-top: 40px;
   padding-bottom: 120px;
 }
 
@@ -133,7 +133,7 @@ button:focus {
 /*---------------------------------------------------- */
 /*----------------------------------------------------*/
 .header_area {
-  position: absolute;
+  position: fixed;
   width: 100%;
   top: 0;
   left: 0;
@@ -298,14 +298,15 @@ button:focus {
 }
 
 .home_banner_area .banner_inner .overlay {
-  background: url(home-banner.jpg) no-repeat scroll center center;
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100%;
   bottom: 0;
   z-index: -1;
+  width: 1920px;
+  height: 400px;
+  background-image: url('banner.jpg');
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
 }
 
 .home_banner_area .banner_inner .banner_content {
@@ -385,14 +386,15 @@ button:focus {
 }
 
 .banner_area .banner_inner .overlay {
-  background: url(banner.jpg) no-repeat scroll center center;
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 100%;
   bottom: 0;
   z-index: -1;
+  width: 1920px;
+  height: 400px;
+  background-image: url('banner.jpg');
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
 }
 
 .banner_area .banner_inner .banner_content h2 {

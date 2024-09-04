@@ -1,9 +1,8 @@
 """Views."""
 from django.shortcuts import render
-from .graph import get_graphs_hourly
+from .graph import get_graphs_hourly, get_generated_ionex_json_url, get_valid_date
 
 from django.shortcuts import render
-from django.http import HttpResponse
 from .forms import DateForm
 
 def index(request):
@@ -21,11 +20,17 @@ def index(request):
             pictures = []
     else:
         pictures = get_graphs_hourly(selected_date)
+
+    form = DateForm(request.POST)
+    correct_date = form.cleaned_data['selected_date'] if request.method == 'POST' and form.is_valid() else ''
+
+    generated_ionex_json_url = get_generated_ionex_json_url(request.POST.get('selected_satellite', 'CODE'), get_valid_date(correct_date))
               
     context = {
             'context': pictures,
             'selected_date': selected_date,
-            'selected_satellite': selected_satellite
+            'selected_satellite': selected_satellite,
+            'generated_ionex_json_url': generated_ionex_json_url
         }
     return render(request, 'home/index.html', context)
 

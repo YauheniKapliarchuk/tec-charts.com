@@ -49,6 +49,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Add this line to specify the directory where collectstatic will gather static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This will be used for the collectstatic command
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -141,3 +144,8 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGGING_CONFIG = None
+
+R2_ENDPOINT_URL = ''
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+R2_BUCKET_NAME = 'tec-charts'

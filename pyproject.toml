@@ -12,7 +12,7 @@ django-crispy-forms = "^2.0"
 matplotlib = "^3.7.3"
 cartopy = "^0.22.0"
 wget = "^3.2"
-
+boto3 = "^1.35.12"
 
 [build-system]
 requires = ["poetry-core"]
