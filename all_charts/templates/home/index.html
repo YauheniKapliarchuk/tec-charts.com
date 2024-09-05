@@ -90,9 +90,9 @@
 
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                 <ul class="nav navbar-nav menu_nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="index-2.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about-us.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index-2.html">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about-us.html">О нас</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Конакты</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="nav-item"><a href="#" class="search"><i class="lnr lnr-magnifier"></i></a></li>
@@ -110,7 +110,7 @@
         <div class="container">
             <div class="banner_content text-center" style="color: white;">
                 <div class="page_link">
-                    <h1>Select a Date</h1>
+                    <h1>Выбрать дату</h1>
                     <form id="dateForm" method="post" action="{% url 'index' %}">
                         {% csrf_token %}
                         <input type="hidden" id="selected_satellite" name="selected_satellite" value="CODE">
@@ -139,8 +139,8 @@
             {% if generated_ionex_json_url %}
                 <div class="generated_link">
                     <h3>
-                        <strong>Generated IONEX JSON</strong>
-                        <a href="{{ generated_ionex_json_url }}" target="_blank">Link</a>
+                        <strong>Сгенерированный IONEX JSON</strong>
+                        <a href="{{ generated_ionex_json_url }}" target="_blank">Ссылка</a>
                     </h3>
                 </div>
             {% endif %}
@@ -160,7 +160,7 @@
                         </div>
                     </div>
                     <!-- Button to copy data to clipboard -->
-                    <button style="margin-left: 35%; margin-bottom: 30px; cursor: copy; border-radius: 10px; border: 1px solid #131433; background-color: #f9f9fe;" class="copy-btn" data-graph-data="{{ graph_obj.data }}">Copy Data</button>
+                    <button style="margin-left: 35%; margin-bottom: 30px; cursor: copy; border-radius: 10px; border: 1px solid #131433; background-color: #f9f9fe;" class="copy-btn" data-graph-data="{{ graph_obj.data }}">Скопировать данные</button>
                 </div>
             {% endfor %}
         </div>
@@ -183,7 +183,7 @@
                     <div class="f_title">
                         <h3>Follow</h3>
                     </div>
-                    <p><a href="https://github.com/YauheniKapliarchuk/tec-charts.com">Follow us in Github</a></p>
+                    <p><a href="https://github.com/YauheniKapliarchuk/tec-charts.com">Присоедениться на Github</a></p>
                 </aside>
             </div>
         </div>
