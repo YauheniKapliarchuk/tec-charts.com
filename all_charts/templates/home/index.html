@@ -114,7 +114,6 @@
                     <form id="dateForm" method="post" action="{% url 'index' %}">
                         {% csrf_token %}
                         <input type="hidden" id="selected_satellite" name="selected_satellite" value="CODE">
-                        <label for="datepicker">Select a date: </label>
                         <input type="text" id="datepicker" name="selected_date" autocomplete="off">
                     </form>
                 </div>

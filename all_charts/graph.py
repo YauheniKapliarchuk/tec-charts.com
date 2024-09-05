@@ -91,7 +91,6 @@ def get_graph_v2(date_hour, date, station):
         'data': data
     }
 
-
 def get_graphs_hourly(selected_date: None, station: str = 'CODE'):
     # If selected_date is None or not present, set it to two days before today
     selected_date = get_valid_date(selected_date)
